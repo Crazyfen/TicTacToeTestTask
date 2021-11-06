@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Игра {{ game_code }}{% endblock %}
+
+{% block body %}
+    <table class="tic_tac_toe_board">
+        {% for row_key, row in board %}
+            <tr>
+                {% for column_key, mark in row %}
+                    <td>
+                        {% if mark %}
+                            <div>{{ mark }}</div>
+                        {% else %}
+                            <a href="{{ path('set_mark', {game_code: game_code, row: row_key, column: column_key}) }}">
+                                <div></div>
+                            </a>
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Игра {{ game_code }}{% endblock %}
+
+{% block body %}
+    {{ message }}
+    <table class="tic_tac_toe_board">
+        {% for row_key, row in board %}
+            <tr>
+                {% for column_key, mark in row %}
+                    <td>
+                        {% if mark %}
+                            <div>{{ mark }}</div>
+                        {% else %}
+                            <div></div>
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

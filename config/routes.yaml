@@ -1,0 +1,11 @@
+index:
+    path: /
+    controller: App\Controller\GameController::index
+
+play_game:
+    path: /game/{game_code?}
+    controller: App\Controller\GameController::newGame
+
+set_mark:
+    path: /game/{game_code}/{row}/{column}
+    controller: App\Controller\GameController::setMark

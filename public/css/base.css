@@ -1,0 +1,46 @@
+body {
+    margin: 1em auto;
+    max-width: 800px;
+    width: 95%;
+    font: 18px/1.5 sans-serif;
+}
+
+.list-unstyled {
+    padding-left: 0;
+    list-style: none;
+}
+
+dl, ol, ul {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+ol, ul {
+    padding-left: 2rem;
+}
+
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+.tic_tac_toe_board {
+    font-weight: bold;
+    border-collapse: collapse;
+}
+
+.tic_tac_toe_board td {
+    text-align: center;
+}
+
+.tic_tac_toe_board td a:hover div{
+    background-color: green;
+    opacity: 0.1;
+}
+
+.tic_tac_toe_board td div{
+    padding: 1em;
+}

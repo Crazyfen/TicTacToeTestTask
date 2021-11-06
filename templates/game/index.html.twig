@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Главная{% endblock %}
+
+{% block body %}
+    <div>
+        <ul class="list-unstyled">
+            <li><a href="{{ path('play_game', {game_code: null}) }}">Начать новую игру</a></li>
+            {% for game in games %}
+                <li><a href="{{ path('play_game', {game_code: game}) }}">Продолжить игру {{ game }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
