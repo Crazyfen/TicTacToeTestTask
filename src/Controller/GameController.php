@@ -39,21 +39,29 @@ class GameController extends AbstractController
     public function setMark(string $game_code, int $row, $column): Response
     {
         $game = $this->gameService->getGame($game_code);
+        $winner_message = null;
 
         try {
             $winner_message = $this->gameService->setMark($game, $row, $column);
         } catch (\Exception $exception) {
-            $this->addFlash('error', $exception->getMessage() . $exception->getTraceAsString());
+            $this->addFlash('error', $exception->getMessage());
         }
 
-        if ($winner_message) {
-            return $this->render('game/game_result.html.twig', [
-                'game_code' => $game->getGameCode(),
-                'board' => $game->getBoardState(),
-                'message' => $winner_message
-            ]);
+        if (!is_null($winner_message)) {
+            return $this->redirectToRoute('game_result', ['game_code' => $game->getGameCode(), 'message' => $winner_message === 'win' ? 'Ты победил' : 'Ты проиграл']);
         }
 
         return $this->redirectToRoute('play_game', ['game_code' => $game->getGameCode()]);
+    }
+
+    public function showResult(string $game_code, ?string $message)
+    {
+        $game = $this->gameService->getGame($game_code);
+
+        return $this->render('game/game_result.html.twig', [
+            'game_code' => $game->getGameCode(),
+            'board' => $game->getBoardState(),
+            'message' => $message
+        ]);
     }
 }

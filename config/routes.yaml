@@ -1,11 +1,15 @@
 index:
-    path: /
-    controller: App\Controller\GameController::index
+  path: /
+  controller: App\Controller\GameController::index
 
 play_game:
-    path: /game/{game_code?}
-    controller: App\Controller\GameController::newGame
+  path: /game/{game_code?}
+  controller: App\Controller\GameController::newGame
+
+game_result:
+  path: /game/{game_code}/result/{message}
+  controller: App\Controller\GameController::showResult
 
 set_mark:
-    path: /game/{game_code}/{row}/{column}
-    controller: App\Controller\GameController::setMark
+  path: /game/{game_code}/{row}/{column}
+  controller: App\Controller\GameController::setMark

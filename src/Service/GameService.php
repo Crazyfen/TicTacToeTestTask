@@ -69,7 +69,7 @@ class GameService
      * @return string|null
      * @throws Exception
      */
-    public function setMark(Game $game, int $row, int $column, string $mark = 'X'): ?string
+    public function setMark(Game $game, int $row, int $column, string $mark = 'X')
     {
         if ($row >= $game->getBoardSize() || $column >= $game->getBoardSize()) {
             throw new Exception('Ваш ход вне диапазона!');
@@ -84,69 +84,42 @@ class GameService
         $board[$row][$column] = $mark;
 
         $game->setBoardState($board);
+        $this->saveGame($game);
         $boardSize = $game->getBoardSize();
         $AIMoves = [];
 
         //Проверка колонок
-        for ($index = 0; $index < $boardSize; $index++) {
-            if ($board[$row][$index] != $mark) {
-                break;
-            }
-            if ($index === ($boardSize - 1)) {
-                return 'Победитель - ' . $mark;
-            }
-            if ($mark === 'X' && $index === ($boardSize - 2)) {
-                $AIMoves[] = [$row, $index + 1];
-            }
+        $marksCount = $game->checkLines($row);
+        if (!is_null($gameEnd = Game::parseMarksSequence($marksCount, $boardSize, $AIMoves))) {
+            return $gameEnd;
         }
 
         //Проверка рядов
-        for ($index = 0; $index < $boardSize; $index++) {
-            if ($board[$index][$column] != $mark) {
-                break;
-            }
-            if ($index === ($boardSize - 1)) {
-                return 'Победитель - ' . $mark;
-            }
-            if ($mark === 'X' && $index === ($boardSize - 2)) {
-                $AIMoves[] = [$index + 1, $column];
-            }
+        $marksCount = $game->checkLines(null, $column);
+        if (!is_null($gameEnd = Game::parseMarksSequence($marksCount, $boardSize, $AIMoves))) {
+            return $gameEnd;
         }
 
         //Проверка главной диагонали
         if ($row === $column) {
-            for ($index = 0; $index < $boardSize; $index++) {
-                if ($board[$index][$index] != $mark) {
-                    break;
-                }
-                if ($index === ($boardSize - 1)) {
-                    return 'Победитель - ' . $mark;
-                }
-                if ($mark === 'X' && $index === ($boardSize - 2)) {
-                    $AIMoves[] = [$index + 1, $index + 1];
-                }
+            $marksCount = $game->checkDiagonal();
+            if (!is_null($gameEnd = Game::parseMarksSequence($marksCount, $boardSize, $AIMoves))) {
+                return $gameEnd;
             }
         }
 
         //Проверка обратной диагонали
         if ($row + $column === ($boardSize - 1)) {
-            for ($index = 0; $index < $boardSize; $index++) {
-                if ($board[$index][($boardSize - 1) - $index] != $mark) {
-                    break;
-                }
-                if ($index === ($boardSize - 1)) {
-                    return 'Победитель - ' . $mark;
-                }
-                if ($mark === 'X' && $index === ($boardSize - 2)) {
-                    $AIMoves[] = [$index + 1, ($boardSize - 1) - $index + 1];
-                }
+            $marksCount = $game->checkDiagonal(false);
+            if (!is_null($gameEnd = Game::parseMarksSequence($marksCount, $boardSize, $AIMoves))) {
+                return $gameEnd;
             }
         }
 
         if ($mark === 'X') {
             if (!empty($AIMoves)) {
                 $coords = $AIMoves[rand(0, count($AIMoves) - 1)];
-                $this->setMark($game, $coords[0], $coords[1], 'O');
+                return $this->setMark($game, $coords[0], $coords[1], 'O');
             } else {
                 foreach (array_reverse($board) as $row_key => $row) {
                     foreach (array_reverse($row) as $column_key => $column) {
@@ -155,11 +128,9 @@ class GameService
                         }
                     }
                 }
-                $this->setMark($game, ($boardSize - 1) - $row_key, ($boardSize - 1) - $column_key, 'O');
+                return $this->setMark($game, ($boardSize - 1) - $row_key, ($boardSize - 1) - $column_key, 'O');
             }
         }
-
-        $this->saveGame($game);
-        return null;
+        return;
     }
 }
